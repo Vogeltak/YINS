@@ -7,15 +7,37 @@
 
 	<title>YINS</title>
 
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+
 </head>
 
 <body>
 
 	<div id="game"></div>
 
-<!-- The Phaser library,
-   - required for everything game related -->
+<!--
+   - The Phaser library,
+   - required for everything game related 
+   -->
 <script src="lib/phaser.js"></script>
+
+<!--
+   - Import files representing the different states
+   -->
+<script src="js/boot.js"></script>
+
+<!--
+   - Set page specific variables
+   - and start boot state
+   -->
+<script>
+	
+	YINS.gameWidth = window.innerWidth;
+	YINS.gameHeight = window.innerHeight;
+
+	YINS.Boot();
+
+</script>
 
 </body>
 
