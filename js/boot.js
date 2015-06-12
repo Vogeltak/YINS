@@ -28,7 +28,9 @@ YINS = {
 }
 
 /* Constructor creates the game object */
-YINS.Boot = function(game) {};
+YINS.Boot = function(game) {
+	console.log('%cStarting YINS..', 'color: white; background: #673ab7');
+};
 
 YINS.Boot.prototype = {
 	preload: function() {
