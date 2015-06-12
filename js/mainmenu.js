@@ -12,7 +12,7 @@ YINS.MainMenu.prototype = {
 		/* Our assets are preloaded, so here we just kick things off
 		by playing some music */
 		this.music = YINS.game.add.audio('menuMusic');
-		this.music.loopFull(0.6);
+		this.music.loopFull(1);
 
 		this.stage.backgroundColor = YINS.color.purple_light;
 
