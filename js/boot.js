@@ -25,6 +25,12 @@ YINS = {
 			align: 'center'
 		},
 
+		subtitle: {
+			font: '3vh Courier New',
+			fill: '#707070',
+			align: 'center',
+		},
+
 		header: {
 			font: '8vh Arial',
 			fill: '#f0f0f0',
