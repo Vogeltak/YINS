@@ -14,6 +14,7 @@ YINS.Preloader.prototype = {
 
 		// Load all assets needed for the game
 		YINS.game.load.audio('menuMusic', ['audio/mainmenu.mp3', 'audio/mainmenu.ogg']);
+		YINS.game.load.audio('gameMusic', ['audio/game.wav']);
 	},
 
 	create: function() {
