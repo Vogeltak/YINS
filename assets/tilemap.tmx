@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="10" tilewidth="21" tileheight="21" nextobjectid="1">
+ <tileset firstgid="1" name="Kenney Platformer Bit Backgrounds" tilewidth="231" tileheight="63">
+  <image source="../../../../mnt/data/art/sprites/kenney/Platformer Art Pixel Redux/backgrounds.png" width="231" height="189"/>
+  <terraintypes>
+   <terrain name="air" tile="0"/>
+  </terraintypes>
+  <tile id="0" terrain="0,0,0,0"/>
+ </tileset>
+ <tileset firstgid="4" name="Kenny Platformer Bit" tilewidth="21" tileheight="21" spacing="2" margin="2">
+  <image source="../../../../mnt/data/art/sprites/kenney/Platformer Art Pixel Redux/spritesheet.png" trans="ffffff" width="692" height="692"/>
+ </tileset>
+ <layer name="background" width="20" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjcgJlGagcrGPUvZWqpbR4AHxAAGQ==
+  </data>
+ </layer>
+ <layer name="foreground" width="20" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBi8oJ7K5s0ZxObVk2FePRJGBk1Qs+agiWFTi24/DCObjU0cWawZj/34cAIeue9oGJ/+BCQswoiQB7GJwTC1CQyYGADRXSg9
+  </data>
+ </layer>
+</map>
