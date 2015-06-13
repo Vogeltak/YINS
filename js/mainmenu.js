@@ -4,8 +4,7 @@
  */
 
 YINS.MainMenu = function(game) {
-	this.music = null;
-	this.spacebar = null;
+	this.music;
 };
 
 YINS.MainMenu.prototype = {
@@ -20,16 +19,14 @@ YINS.MainMenu.prototype = {
 		var title = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY, 'YINS', YINS.text.title);
 		title.anchor.set(0.5);
 
-		var subtitle = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY + 80, '- Press space to start -', YINS.text.subtitle);
+		var subtitle = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY + 80, '- Click to start -', YINS.text.subtitle);
 		subtitle.anchor.set(0.5);
 
-		this.spacebar = YINS.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+		YINS.game.input.onDown.add(this.startGame, this);
 	},
 
-	update: function() {
-		if (this.spacebar.isDown) {
-			this.music.stop();
-			YINS.game.state.start('game');
-		}
+	startGame: function(pointer) {
+		this.music.stop();
+ 		YINS.game.state.start('game');
 	}
 };
