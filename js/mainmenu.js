@@ -28,6 +28,7 @@ YINS.MainMenu.prototype = {
 
 	update: function() {
 		if (this.spacebar.isDown) {
+			this.music.stop();
 			YINS.game.state.start('game');
 		}
 	}
