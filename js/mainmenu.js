@@ -16,7 +16,10 @@ YINS.MainMenu.prototype = {
 
 		this.stage.backgroundColor = YINS.color.purple_light;
 
-		var title = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY, "YINS", YINS.text.title);
+		var title = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY, 'YINS', YINS.text.title);
 		title.anchor.set(0.5);
+
+		var subtitle = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY + 80, '- Press the any key to start -', YINS.text.subtitle);
+		subtitle.anchor.set(0.5);
 	}
 };
