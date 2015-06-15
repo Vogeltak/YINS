@@ -5,7 +5,8 @@
 
 YINS.Game = function(game) {
 	this.music;
-	this.player;
+	this.player = {};
+	this.controls = {};
 };
 
 YINS.Game.prototype = {
@@ -18,10 +19,12 @@ YINS.Game.prototype = {
 
 		/* Add sprites to the game world */
 		this.player = YINS.game.add.sprite(YINS.game.world.centerX, YINS.game.world.centerY, 'sprites', 19);
+		console.log('%cSpawning player at ' + YINS.game.world.centerX + ', ' + YINS.game.world.centerY, 'color: white; background: #b39ddb');
 
 		/* Declare animations */
 		this.player.animations.add('idle', [19]);
-		this.player.animations.add('walk-right', [20, 21], 12);
+		this.player.animations.add('walk', [19, 20, 21], 8);
+		this.player.animations.add('jump', [26, 27, 28, 29], 10);
 
 		/* Enable ARCADE physics engine 
 		You can read more about this in the documentation: http://phaser.io/docs/2.3.0/Phaser.Physics.Arcade.html
@@ -40,11 +43,60 @@ YINS.Game.prototype = {
 		/* Change properties of the player sprite */
 		this.player.scale.setTo(YINS.sprite_scale);
 		this.player.smoothed = false;
+		this.player.anchor.setTo(0.5, 0.5);
 		this.player.body.collideWorldBounds = true;
+
+		// Player's direction is kept track of because
+		// it is needed for playing the right animations
+		// 0 = left, 1 = right
+		this.player.direction = 1;
+
+		/* Set controls */
+		this.controls.right = YINS.game.input.keyboard.addKey(Phaser.Keyboard.D);
+		this.controls.left = YINS.game.input.keyboard.addKey(Phaser.Keyboard.A);
+		this.controls.jump = YINS.game.input.keyboard.addKey(Phaser.Keyboard.W);
 
 	},
 
 	update: function() {
+
+		/* Player's velocity has to be set to 0 again,
+		otherwise the player would run forever when it once pressed a button */
+		this.player.body.velocity.x = 0;
+
+		/*
+		 *	Check for and handle player movement
+		 */
+		if (this.controls.right.isDown) {
+			// If the player is turned left
+			// change direction to right
+			if (this.player.direction == 0) {
+				this.player.scale.x *= -1;
+				this.player.direction = 1;
+			}
+
+			this.player.body.velocity.x = 450;
+			this.player.play('walk');
+		}
+		else if (this.controls.left.isDown) {
+			// If the player is turned right
+			// change direction to left
+			if (this.player.direction == 1) {
+				this.player.scale.x *= -1;
+				this.player.direction = 0;
+			}
+
+			this.player.body.velocity.x = -450;
+			this.player.play('walk');
+		}
+		else {
+			this.player.play('idle');
+		}
+
+		if (this.controls.jump.isDown && this.player.body.onFloor()) {
+			this.player.body.velocity.y = -1000;
+			this.player.play('jump');
+		} 
 
 	}
 };
