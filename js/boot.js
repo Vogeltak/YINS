@@ -8,7 +8,7 @@ YINS = {
 
 	/* declare global variables, these will persist across different states */
 	score: 0,
-	sprite_scale: 3,
+	sprite_scale: 3.5,
 
 	/* Declare global colors used throughout the game 
 	Usage example: YINS.color.purple  */
