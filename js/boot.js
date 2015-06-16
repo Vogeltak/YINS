@@ -39,7 +39,7 @@ YINS = {
 		}
 	}
 
-}
+};
 
 /* Constructor creates the game object */
 YINS.Boot = function(game) {
