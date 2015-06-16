@@ -7,6 +7,7 @@ YINS.Game = function(game) {
 	this.music =  null;
 	this.player = {};
 	this.controls = {};
+	this.coords = {};
 };
 
 YINS.Game.prototype = {
@@ -24,7 +25,8 @@ YINS.Game.prototype = {
 		/* Declare animations */
 		this.player.animations.add('idle', [19]);
 		this.player.animations.add('walk', [19, 20, 21], 8);
-		this.player.animations.add('jump', [26, 27, 28, 29], 10);
+		this.player.animations.add('up', [28]);
+		this.player.animations.add('down', [29]);
 
 		/* Enable ARCADE physics engine 
 		You can read more about this in the documentation: http://phaser.io/docs/2.3.0/Phaser.Physics.Arcade.html
@@ -95,8 +97,10 @@ YINS.Game.prototype = {
 
 		if (this.controls.jump.isDown && this.player.body.onFloor()) {
 			this.player.body.velocity.y = -1000;
-			this.player.play('jump');
-		} 
+		}
+		else if (!this.player.body.onFloor()) {
+			this.player.play('up');
+		}
 
 	}
 };
