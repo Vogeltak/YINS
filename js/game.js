@@ -4,7 +4,7 @@
  */
 
 YINS.Game = function(game) {
-	this.music;
+	this.music =  null;
 	this.player = {};
 	this.controls = {};
 };
@@ -70,7 +70,7 @@ YINS.Game.prototype = {
 		if (this.controls.right.isDown) {
 			// If the player is turned left
 			// change direction to right
-			if (this.player.direction == 0) {
+			if (this.player.direction === 0) {
 				this.player.scale.x *= -1;
 				this.player.direction = 1;
 			}
