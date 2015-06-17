@@ -101,14 +101,18 @@ YINS.Game.prototype = {
 		if (this.controls.jump.isDown && this.player.body.onFloor()) {
 			this.player.body.velocity.y = -1000;
 		}
+		
+		// Play the up animation while the player is still going up
 		else if (!this.player.body.onFloor() && this.player.body.y < this.previousCoords.y) {
 			this.player.play('up');
 		}
+		
+		// Play the down animation while the player is falling down
 		else if (!this.player.body.onFloor() && this.player.body.y > this.previousCoords.y) {
 			this.player.play('down');
 		}
 
-		/* Update player coordinates */
+		/* Update player's previous coordinates */
 		this.previousCoords.x = this.player.body.x;
 		this.previousCoords.y = this.player.body.y;
 		
