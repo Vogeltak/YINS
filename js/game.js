@@ -8,6 +8,7 @@ YINS.Game = function(game) {
 	this.player = {};
 	this.controls = {};
 	this.previousCoords = {};
+	this.slime = {};
 };
 
 YINS.Game.prototype = {
@@ -21,12 +22,15 @@ YINS.Game.prototype = {
 		/* Add sprites to the game world */
 		this.player = YINS.game.add.sprite(YINS.game.world.centerX, YINS.game.world.centerY, 'sprites', 19);
 		console.log('%cSpawning player at ' + YINS.game.world.centerX + ', ' + YINS.game.world.centerY, 'color: white; background: #b39ddb');
+		this.slime = YINS.game.add.sprite(YINS.game.world.centerX + 300, YINS.game.world.centerY, 'sprites', 230);
 
 		/* Declare animations */
 		this.player.animations.add('idle', [19]);
 		this.player.animations.add('walk', [19, 20, 21], 8);
 		this.player.animations.add('down', [28]);
 		this.player.animations.add('up', [29], 10);
+		
+		this.slime.animations.add('idle', [231, 230, 229], 6);
 
 		/* Enable ARCADE physics engine 
 		You can read more about this in the documentation: http://phaser.io/docs/2.3.0/Phaser.Physics.Arcade.html
@@ -36,6 +40,7 @@ YINS.Game.prototype = {
 
 		// Enable ARCADE physics on sprites
 		YINS.game.physics.enable(this.player, Phaser.Physics.ARCADE);
+		YINS.game.physics.enable(this.slime, Phaser.Physics.ARCADE);
 
 		/* Set gravity of the whole game world 
 		This can be manually changed on a per sprite basis by setting
@@ -50,6 +55,13 @@ YINS.Game.prototype = {
 		// Set initial previous coordinates to spawn
 		this.previousCoords.x = this.player.body.x;
 		this.previousCoords.y = this.player.body.y;
+		
+		/* Change properties of the slime sprite */
+		this.slime.scale.setTo(YINS.sprite_scale);
+		this.slime.smoothed = false;
+		this.slime.anchor.setTo(0.5, 0.5);
+		this.slime.body.collideWorldBounds = true;
+		
 
 		// Player's direction is kept track of because
 		// it is needed for playing the right animations
@@ -64,6 +76,8 @@ YINS.Game.prototype = {
 	},
 
 	update: function() {
+		
+		this.slime.play('idle');
 
 		/* Player's velocity has to be set to 0 again,
 		otherwise the player would run forever when it once pressed a button */
