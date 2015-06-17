@@ -19,6 +19,8 @@ YINS.Game.prototype = {
 		this.music = YINS.game.add.audio('gameMusic');
 		this.music.loopFull(0.5);
 
+		YINS.game.stage.backgroundColor = YINS.color.green_light;
+
 		/* Add sprites to the game world */
 		this.player = YINS.game.add.sprite(YINS.game.world.centerX, YINS.game.world.centerY, 'sprites', 19);
 		console.log('%cSpawning player at ' + YINS.game.world.centerX + ', ' + YINS.game.world.centerY, 'color: white; background: #b39ddb');
