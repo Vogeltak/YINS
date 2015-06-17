@@ -14,7 +14,9 @@ YINS = {
 	Usage example: YINS.color.purple  */
 	color: {
 		purple: '#673ab7',
-		purple_light: '#b39ddb'
+		purple_light: '#b39ddb',
+		green_light: '#c5e1a5',
+		white: '#f0f0f0'
 	},
 
 	/* Text styles are available by calling: YINS.text.STYLE 
