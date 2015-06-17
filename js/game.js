@@ -25,8 +25,8 @@ YINS.Game.prototype = {
 		/* Declare animations */
 		this.player.animations.add('idle', [19]);
 		this.player.animations.add('walk', [19, 20, 21], 8);
-		this.player.animations.add('up', [28]);
-		this.player.animations.add('down', [29], 10);
+		this.player.animations.add('down', [28]);
+		this.player.animations.add('up', [29], 10);
 
 		/* Enable ARCADE physics engine 
 		You can read more about this in the documentation: http://phaser.io/docs/2.3.0/Phaser.Physics.Arcade.html
