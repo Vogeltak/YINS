@@ -7,7 +7,7 @@ YINS.Game = function(game) {
 	this.music =  null;
 	this.player = {};
 	this.controls = {};
-	this.coords = {};
+	this.previousCoords = {};
 };
 
 YINS.Game.prototype = {
@@ -47,6 +47,9 @@ YINS.Game.prototype = {
 		this.player.smoothed = false;
 		this.player.anchor.setTo(0.5, 0.5);
 		this.player.body.collideWorldBounds = true;
+		// Set initial previous coordinates to spawn
+		this.previousCoords.x = this.player.body.x;
+		this.previousCoords.y = this.player.body.y;
 
 		// Player's direction is kept track of because
 		// it is needed for playing the right animations
@@ -98,9 +101,16 @@ YINS.Game.prototype = {
 		if (this.controls.jump.isDown && this.player.body.onFloor()) {
 			this.player.body.velocity.y = -1000;
 		}
-		else if (!this.player.body.onFloor()) {
+		else if (!this.player.body.onFloor() && this.player.body.y < this.previousCoords.y) {
 			this.player.play('up');
 		}
+		else if (!this.player.body.onFloor() && this.player.body.y > this.previousCoords.y) {
+			this.player.play('down');
+		}
 
+		/* Update player coordinates */
+		this.previousCoords.x = this.player.body.x;
+		this.previousCoords.y = this.player.body.y;
+		
 	}
 };
