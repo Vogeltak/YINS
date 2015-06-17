@@ -26,7 +26,7 @@ YINS.Game.prototype = {
 		this.player.animations.add('idle', [19]);
 		this.player.animations.add('walk', [19, 20, 21], 8);
 		this.player.animations.add('up', [28]);
-		this.player.animations.add('down', [27, 29]);
+		this.player.animations.add('down', [29], 10);
 
 		/* Enable ARCADE physics engine 
 		You can read more about this in the documentation: http://phaser.io/docs/2.3.0/Phaser.Physics.Arcade.html
@@ -95,6 +95,7 @@ YINS.Game.prototype = {
 			this.player.play('walk');
 		}
 		else {
+			// When there are absolutely no inputs from the user
 			this.player.play('idle');
 		}
 
