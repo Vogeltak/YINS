@@ -132,6 +132,13 @@ YINS.Game.prototype = {
 		/* Update player's previous coordinates */
 		this.previousCoords.x = this.player.body.x;
 		this.previousCoords.y = this.player.body.y;
-		
+
+		if (this.player.body.x < this.slime.body.x) {
+			this.slime.body.velocity.x = -150;
+		}
+		else if (this.player.body.x > this.slime.body.x) {
+			this.slime.body.velocity.x = 150;
+		}
+
 	}
 };
