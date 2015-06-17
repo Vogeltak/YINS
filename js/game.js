@@ -63,7 +63,6 @@ YINS.Game.prototype = {
 		this.slime.smoothed = false;
 		this.slime.anchor.setTo(0.5, 0.5);
 		this.slime.body.collideWorldBounds = true;
-		
 
 		// Player's direction is kept track of because
 		// it is needed for playing the right animations
@@ -71,9 +70,10 @@ YINS.Game.prototype = {
 		this.player.direction = 1;
 
 		/* Set controls */
-		this.controls.right = YINS.game.input.keyboard.addKey(Phaser.Keyboard.D);
-		this.controls.left = YINS.game.input.keyboard.addKey(Phaser.Keyboard.A);
-		this.controls.jump = YINS.game.input.keyboard.addKey(Phaser.Keyboard.W);
+		this.controls = YINS.game.input.keyboard.createCursorKeys();
+		this.controls.d = YINS.game.input.keyboard.addKey(Phaser.Keyboard.D);
+		this.controls.a = YINS.game.input.keyboard.addKey(Phaser.Keyboard.A);
+		this.controls.w = YINS.game.input.keyboard.addKey(Phaser.Keyboard.W);
 
 	},
 
@@ -88,7 +88,7 @@ YINS.Game.prototype = {
 		/*
 		 *	Check for and handle player movement
 		 */
-		if (this.controls.right.isDown) {
+		if (this.controls.right.isDown || this.controls.d.isDown) {
 			// If the player is turned left
 			// change direction to right
 			if (this.player.direction === 0) {
@@ -99,7 +99,7 @@ YINS.Game.prototype = {
 			this.player.body.velocity.x = 450;
 			this.player.play('walk');
 		}
-		else if (this.controls.left.isDown) {
+		else if (this.controls.left.isDown || this.controls.a.isDown) {
 			// If the player is turned right
 			// change direction to left
 			if (this.player.direction == 1) {
@@ -115,7 +115,7 @@ YINS.Game.prototype = {
 			this.player.play('idle');
 		}
 
-		if (this.controls.jump.isDown && this.player.body.onFloor()) {
+		if ((this.controls.up.isDown || this.controls.w.isDown) && this.player.body.onFloor()) {
 			this.player.body.velocity.y = -1000;
 		}
 		
