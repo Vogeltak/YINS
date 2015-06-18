@@ -47,7 +47,7 @@ YINS.Game.prototype = {
 		/* Set gravity of the whole game world 
 		This can be manually changed on a per sprite basis by setting
 		SPRITE.body.gravity.y = GRAVITY */
-		YINS.game.physics.arcade.gravity.y = 2000;
+		YINS.game.physics.arcade.gravity.y = 1000;
 
 		/* Change properties of the player sprite */
 		this.player.scale.setTo(YINS.sprite_scale);
@@ -97,7 +97,7 @@ YINS.Game.prototype = {
 				this.player.direction = 1;
 			}
 
-			this.player.body.velocity.x = 450;
+			this.player.body.velocity.x = 350;
 			this.player.play('walk');
 		}
 		else if (this.controls.left.isDown || this.controls.a.isDown) {
@@ -108,7 +108,7 @@ YINS.Game.prototype = {
 				this.player.direction = 0;
 			}
 
-			this.player.body.velocity.x = -450;
+			this.player.body.velocity.x = -350;
 			this.player.play('walk');
 		}
 		else {
@@ -117,7 +117,7 @@ YINS.Game.prototype = {
 		}
 
 		if ((this.controls.up.isDown || this.controls.w.isDown) && this.player.body.onFloor()) {
-			this.player.body.velocity.y = -1000;
+			this.player.body.velocity.y = -500;
 		}
 		
 		// Play the up animation while the player is still going up
