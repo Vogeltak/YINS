@@ -74,6 +74,7 @@ YINS.Game.prototype = {
 		this.controls.d = YINS.game.input.keyboard.addKey(Phaser.Keyboard.D);
 		this.controls.a = YINS.game.input.keyboard.addKey(Phaser.Keyboard.A);
 		this.controls.w = YINS.game.input.keyboard.addKey(Phaser.Keyboard.W);
+		this.controls.shoot = YINS.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	},
 
