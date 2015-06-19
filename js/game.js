@@ -26,7 +26,7 @@ YINS.Game.prototype = {
 		/* Set up tilemap */
 		this.map = YINS.game.add.tilemap('map');
 		this.map.addTilesetImage('kenney platformer', 'spritesheet');
-		this.map.setCollision([123, 153]);
+		this.map.setCollision([122, 123, 124, 125, 153, 332, 333, 93]);
 		
 		this.layer = this.map.createLayer('Tile Layer 1');
 		this.layer.resizeWorld();
