@@ -29,6 +29,8 @@ YINS.Game.prototype = {
 		this.map.setCollision([122, 123, 124, 125, 153, 332, 333, 93]);
 		
 		this.layer = this.map.createLayer('Tile Layer 1');
+		this.layer.setScale(YINS.sprite_scale);
+		this.layer.smoothed = false;
 		this.layer.resizeWorld();
 
 		/* Add sprites to the game world */
