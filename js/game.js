@@ -153,10 +153,10 @@ YINS.Game.prototype = {
 		this.previousCoords.x = this.player.body.x;
 		this.previousCoords.y = this.player.body.y;
 
-		if (this.player.body.x < this.slime.body.x) {
+		if (this.player.body.x < this.slime.body.x && this.slime.body.onFloor()) {
 			this.slime.body.velocity.x = -150;
 		}
-		else if (this.player.body.x > this.slime.body.x) {
+		else if (this.player.body.x > this.slime.body.x && this.slime.body.onFloor()) {
 			this.slime.body.velocity.x = 150;
 		}
 
