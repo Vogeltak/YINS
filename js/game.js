@@ -26,6 +26,7 @@ YINS.Game.prototype = {
 		/* Set up tilemap */
 		this.map = YINS.game.add.tilemap('map');
 		this.map.addTilesetImage('kenney platformer', 'spritesheet');
+		this.map.setCollision([123, 153]);
 		
 		this.layer = this.map.createLayer('Tile Layer 1');
 		this.layer.resizeWorld();
@@ -91,6 +92,12 @@ YINS.Game.prototype = {
 	},
 
 	update: function() {
+		
+		/* Set collisions between player and tilemap */
+		YINS.game.physics.arcade.collide(this.player, this.layer);
+		
+		/* Set collisions between slime and tilemap */
+		YINS.game.physics.arcade.collide(this.slime, this.layer);
 		
 		this.slime.play('idle');
 
