@@ -5,6 +5,8 @@
 
 YINS.Game = function(game) {
 	this.music =  null;
+	this.map = {};
+	this.layer = {};
 	this.player = {};
 	this.controls = {};
 	this.previousCoords = {};
@@ -20,11 +22,18 @@ YINS.Game.prototype = {
 		this.music.loopFull(0.5);
 
 		YINS.game.stage.backgroundColor = YINS.color.green_light;
+		
+		/* Set up tilemap */
+		this.map = YINS.game.add.tilemap('map');
+		this.map.addTilesetImage('kenney platformer', 'spritesheet');
+		
+		this.layer = this.map.createLayer('Tile Layer 1');
+		this.layer.resizeWorld();
 
 		/* Add sprites to the game world */
-		this.player = YINS.game.add.sprite(YINS.game.world.centerX, YINS.game.world.centerY, 'sprites', 19);
+		this.player = YINS.game.add.sprite(YINS.game.world.centerX, YINS.game.world.centerY, 'spritesheet', 19);
 		console.log('%cSpawning player at ' + YINS.game.world.centerX + ', ' + YINS.game.world.centerY, 'color: white; background: #b39ddb');
-		this.slime = YINS.game.add.sprite(YINS.game.world.centerX + 300, YINS.game.world.centerY, 'sprites', 230);
+		this.slime = YINS.game.add.sprite(YINS.game.world.centerX + 300, YINS.game.world.centerY, 'spritesheet', 230);
 
 		/* Declare animations */
 		this.player.animations.add('idle', [19]);
@@ -76,6 +85,9 @@ YINS.Game.prototype = {
 		this.controls.w = YINS.game.input.keyboard.addKey(Phaser.Keyboard.W);
 		this.controls.shoot = YINS.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+		/* Camera settings */
+		YINS.game.camera.follow(this.player);
+		
 	},
 
 	update: function() {
