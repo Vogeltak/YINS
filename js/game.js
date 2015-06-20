@@ -26,7 +26,11 @@ YINS.Game.prototype = {
 		/* Set up tilemap */
 		this.map = YINS.game.add.tilemap('map');
 		this.map.addTilesetImage('kenney platformer', 'spritesheet');
-		this.map.setCollisionBetween(1, 360);
+
+		// FIXME: 
+		// Somehow all tiles won't collide anymore when
+		// collision on 124 is set.
+		this.map.setCollision([153, 333]);
 		
 		this.layer = this.map.createLayer('ground');
 		this.layer.setScale(YINS.sprite_scale);
