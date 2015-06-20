@@ -122,7 +122,7 @@ YINS.Game.prototype = {
 				this.player.direction = 1;
 			}
 
-			this.player.body.velocity.x = 350;
+			this.player.body.velocity.x = 450;
 			this.player.play('walk');
 		}
 		else if (this.controls.left.isDown || this.controls.a.isDown) {
@@ -133,7 +133,7 @@ YINS.Game.prototype = {
 				this.player.direction = 0;
 			}
 
-			this.player.body.velocity.x = -350;
+			this.player.body.velocity.x = -450;
 			this.player.play('walk');
 		}
 		else {
@@ -142,7 +142,7 @@ YINS.Game.prototype = {
 		}
 
 		if ((this.controls.up.isDown || this.controls.w.isDown) && this.player.body.onFloor()) {
-			this.player.body.velocity.y = -500;
+			this.player.body.velocity.y = -600;
 		}
 		
 		// Play the up animation while the player is still going up
