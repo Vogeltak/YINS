@@ -85,6 +85,11 @@ YINS.Game.prototype = {
 		// 0 = left, 1 = right
 		this.player.direction = 1;
 
+		// Slime's direction is kept track of because
+		// it is needed for playing the right animations
+		// 0 = left, 1 = right 
+		this.slime.direction = 0;
+
 		/* Set controls */
 		this.controls = YINS.game.input.keyboard.createCursorKeys();
 		this.controls.d = YINS.game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -159,10 +164,20 @@ YINS.Game.prototype = {
 		this.previousCoords.x = this.player.body.x;
 		this.previousCoords.y = this.player.body.y;
 
-		if (this.player.body.x < this.slime.body.x && this.slime.body.onFloor()) {
+		if (this.player.body.x < this.slime.body.x) {
+			if (this.slime.direction == 1) {
+				this.slime.scale.x *= -1;
+				this.slime.direction = 0;
+			}
+
 			this.slime.body.velocity.x = -150;
 		}
-		else if (this.player.body.x > this.slime.body.x && this.slime.body.onFloor()) {
+		else if (this.player.body.x > this.slime.body.x) {
+			if (this.slime.direction == 0) {
+				this.slime.scale.x *= -1;
+				this.slime.direction = 1;
+			}
+
 			this.slime.body.velocity.x = 150;
 		}
 
