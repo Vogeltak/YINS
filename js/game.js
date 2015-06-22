@@ -51,6 +51,7 @@ YINS.Game.prototype = {
 		this.player.animations.add('walk', [19, 20, 21], 8);
 		this.player.animations.add('down', [28]);
 		this.player.animations.add('up', [29], 10);
+		this.player.animations.add('duck', [22]);
 		
 		this.slime.animations.add('idle', [231, 230, 229], 6);
 
@@ -99,6 +100,7 @@ YINS.Game.prototype = {
 		this.controls.d = YINS.game.input.keyboard.addKey(Phaser.Keyboard.D);
 		this.controls.a = YINS.game.input.keyboard.addKey(Phaser.Keyboard.A);
 		this.controls.w = YINS.game.input.keyboard.addKey(Phaser.Keyboard.W);
+		this.controls.s = YINS.game.input.keyboard.addKey(Phaser.Keyboard.S);
 		this.controls.shoot = YINS.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 		/* Camera settings */
@@ -162,6 +164,12 @@ YINS.Game.prototype = {
 		// Play the down animation while the player is falling down
 		else if (!this.player.body.onFloor() && this.player.body.y > this.previousCoords.y) {
 			this.player.play('down');
+		}
+
+		// When the player ducks
+		if (this.controls.down.isDown || this.controls.s.isDown) {
+			this.player.play('duck');
+			this.player.body.velocity.y = 600;
 		}
 
 		/* Update player's previous coordinates */
