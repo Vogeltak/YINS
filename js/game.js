@@ -8,6 +8,7 @@ YINS.Game = function(game) {
 	this.map = {};
 	this.ground = {};
 	this.player = {};
+	this.health = {};
 	this.controls = {};
 	this.previousCoords = {};
 	this.slime = {};
@@ -27,16 +28,23 @@ YINS.Game.prototype = {
 		this.map = YINS.game.add.tilemap('map');
 		this.map.addTilesetImage('kenney platformer', 'spritesheet');
 
-		this.map.setCollision([124, 153, 333]);
+		this.map.setCollision([124, 153, 333, 737, 739, 767, 831]);
 		
 		this.ground = this.map.createLayer('ground');
 		this.ground.setScale(YINS.sprite_scale);
 		this.ground.smoothed = false;
 		this.ground.resizeWorld();
+		YINS.game.add.existing(this.ground);
 
 		/* Add sprites to the game world */
 		this.player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
 		this.slime = YINS.game.add.sprite(600, 4515, 'spritesheet', 230);
+
+		// Health indication
+		this.health = YINS.game.add.image(64, 64, 'spritesheet', 373);
+		this.health.scale.setTo(YINS.sprite_scale);
+		this.health.smoothed = false;
+		this.health.fixedToCamera = true;
 
 		/* Declare animations */
 		this.player.animations.add('idle', [19]);
@@ -142,7 +150,7 @@ YINS.Game.prototype = {
 			this.player.play('idle');
 		}
 
-		if ((this.controls.up.isDown || this.controls.w.isDown) && this.player.body.onFloor()) {
+		if ((this.controls.up.isDown || this.controls.w.isDown)) {
 			this.player.body.velocity.y = -600;
 		}
 		
