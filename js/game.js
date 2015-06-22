@@ -6,7 +6,7 @@
 YINS.Game = function(game) {
 	this.music =  null;
 	this.map = {};
-	this.layer = {};
+	this.ground = {};
 	this.player = {};
 	this.controls = {};
 	this.previousCoords = {};
@@ -27,20 +27,16 @@ YINS.Game.prototype = {
 		this.map = YINS.game.add.tilemap('map');
 		this.map.addTilesetImage('kenney platformer', 'spritesheet');
 
-		// FIXME: 
-		// Somehow all tiles won't collide anymore when
-		// collision on 124 is set.
-		this.map.setCollision([153, 333]);
+		this.map.setCollision([124, 153, 333]);
 		
-		this.layer = this.map.createLayer('ground');
-		this.layer.setScale(YINS.sprite_scale);
-		this.layer.smoothed = false;
-		this.layer.resizeWorld();
+		this.ground = this.map.createLayer('ground');
+		this.ground.setScale(YINS.sprite_scale);
+		this.ground.smoothed = false;
+		this.ground.resizeWorld();
 
 		/* Add sprites to the game world */
-		this.player = YINS.game.add.sprite(YINS.game.world.centerX, YINS.game.world.centerY, 'spritesheet', 19);
-		console.log('%cSpawning player at ' + YINS.game.world.centerX + ', ' + YINS.game.world.centerY, 'color: white; background: #b39ddb');
-		this.slime = YINS.game.add.sprite(YINS.game.world.centerX + 300, YINS.game.world.centerY, 'spritesheet', 230);
+		this.player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
+		this.slime = YINS.game.add.sprite(600, 4515, 'spritesheet', 230);
 
 		/* Declare animations */
 		this.player.animations.add('idle', [19]);
@@ -105,10 +101,10 @@ YINS.Game.prototype = {
 	update: function() {
 		
 		/* Set collisions between player and tilemap */
-		YINS.game.physics.arcade.collide(this.player, this.layer);
+		YINS.game.physics.arcade.collide(this.player, this.ground);
 		
 		/* Set collisions between slime and tilemap */
-		YINS.game.physics.arcade.collide(this.slime, this.layer);
+		YINS.game.physics.arcade.collide(this.slime, this.ground);
 		
 		this.slime.play('idle');
 
