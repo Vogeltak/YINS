@@ -13,6 +13,7 @@ YINS = {
 	/* Declare global colors used throughout the game 
 	Usage example: YINS.color.purple  */
 	color: {
+	        grey_dark: '#404040',
 		purple: '#673ab7',
 		purple_light: '#b39ddb',
 		green_light: '#c5e1a5',
