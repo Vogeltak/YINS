@@ -28,7 +28,7 @@ YINS.Game.prototype = {
 		this.map = YINS.game.add.tilemap('map');
 		this.map.addTilesetImage('kenney platformer', 'spritesheet');
 
-		this.map.setCollision([124, 153, 333, 668, 737, 739, 767, 768, 831]);
+		this.map.setCollision([124, 153, 333, 637, 668, 737, 739, 767, 768, 831]);
 		
 		this.ground = this.map.createLayer('ground');
 		this.ground.setScale(YINS.sprite_scale);
@@ -68,7 +68,7 @@ YINS.Game.prototype = {
 		/* Set gravity of the whole game world 
 		This can be manually changed on a per sprite basis by setting
 		SPRITE.body.gravity.y = GRAVITY */
-		YINS.game.physics.arcade.gravity.y = 1000;
+		YINS.game.physics.arcade.gravity.y = 1500;
 
 		/* Change properties of the player sprite */
 		this.player.scale.setTo(YINS.sprite_scale);
@@ -110,6 +110,8 @@ YINS.Game.prototype = {
 
 	update: function() {
 		
+		YINS.game.camera.y -= 500;
+
 		/* Set collisions between player and tilemap */
 		YINS.game.physics.arcade.collide(this.player, this.ground);
 		
@@ -196,7 +198,7 @@ YINS.Game.prototype = {
 	},
 
 	render: function() {
-		YINS.game.debug.text('Sprite X: ' + this.player.body.x + ' Y: ' + this.player.body.y, 32, 64);
+		YINS.game.debug.text('Sprite X: ' + this.player.body.x + ' Y: ' + this.player.body.y, 32, 32);
 	}
 
 };
