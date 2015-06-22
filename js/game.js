@@ -22,7 +22,7 @@ YINS.Game.prototype = {
 		this.music = YINS.game.add.audio('gameMusic');
 		this.music.loopFull(0.5);
 
-		YINS.game.stage.backgroundColor = YINS.color.green_light;
+		YINS.game.stage.backgroundColor = '#404040';
 		
 		/* Set up tilemap */
 		this.map = YINS.game.add.tilemap('map');
