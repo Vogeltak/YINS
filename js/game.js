@@ -28,7 +28,7 @@ YINS.Game.prototype = {
 		this.map = YINS.game.add.tilemap('map');
 		this.map.addTilesetImage('kenney platformer', 'spritesheet');
 
-		this.map.setCollision([124, 153, 333, 737, 739, 767, 831]);
+		this.map.setCollision([124, 153, 333, 668, 737, 739, 767, 768, 831]);
 		
 		this.ground = this.map.createLayer('ground');
 		this.ground.setScale(YINS.sprite_scale);
@@ -38,7 +38,7 @@ YINS.Game.prototype = {
 
 		/* Add sprites to the game world */
 		this.player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
-		this.slime = YINS.game.add.sprite(600, 4515, 'spritesheet', 230);
+		this.slime = YINS.game.add.sprite(5015, 4090, 'spritesheet', 230);
 
 		// Health indication
 		this.health = YINS.game.add.image(64, 64, 'spritesheet', 373);
@@ -150,7 +150,7 @@ YINS.Game.prototype = {
 			this.player.play('idle');
 		}
 
-		if ((this.controls.up.isDown || this.controls.w.isDown)) {
+		if ((this.controls.up.isDown || this.controls.w.isDown) && this.player.body.onFloor()) {
 			this.player.body.velocity.y = -600;
 		}
 		
@@ -185,5 +185,10 @@ YINS.Game.prototype = {
 			this.slime.body.velocity.x = 150;
 		}
 
+	},
+
+	render: function() {
+		YINS.game.debug.text('Sprite X: ' + this.player.body.x + ' Y: ' + this.player.body.y, 32, 64);
 	}
+
 };
