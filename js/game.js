@@ -11,6 +11,7 @@ YINS.Game = function(game) {
 	this.health = {};
 	this.controls = {};
 	this.previousCoords = {};
+	this.enemies = {};
 };
 
 YINS.Game.prototype = {
@@ -23,7 +24,9 @@ YINS.Game.prototype = {
 
 		YINS.game.stage.backgroundColor = YINS.color.grey_dark;
 		
-		/* Set up tilemap */
+		/*
+		 *	Set up tilemap 
+		 */
 		this.map = YINS.game.add.tilemap('map');
 		this.map.addTilesetImage('kenney platformer', 'spritesheet');
 
@@ -35,9 +38,15 @@ YINS.Game.prototype = {
 		this.ground.resizeWorld();
 		YINS.game.add.existing(this.ground);
 
-		// monster spawn 5015, 4090
-		/* Add sprites to the game world */
+		/*
+		 *	Create monster group
+		 */
+
+		/* 
+		 *	Add sprites to the game world 
+		 */
 		this.player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
+		// monster spawn 5015, 4090
 
 		// Health indication
 		this.health = YINS.game.add.image(64, 64, 'spritesheet', 373);
@@ -45,7 +54,9 @@ YINS.Game.prototype = {
 		this.health.smoothed = false;
 		this.health.fixedToCamera = true;
 
-		/* Declare animations */
+		/* 
+		 *	Declare animations 
+		 */
 		this.player.animations.add('idle', [19]);
 		this.player.animations.add('walk', [19, 20, 21], 8);
 		this.player.animations.add('down', [28]);
@@ -66,7 +77,9 @@ YINS.Game.prototype = {
 		SPRITE.body.gravity.y = GRAVITY */
 		YINS.game.physics.arcade.gravity.y = 1500;
 
-		/* Change properties of the player sprite */
+		/* 
+		 *	Change properties of the player sprite 
+		 */
 		this.player.scale.setTo(YINS.sprite_scale);
 		this.player.smoothed = false;
 		this.player.anchor.setTo(0.5, 0.5);
@@ -80,7 +93,9 @@ YINS.Game.prototype = {
 		// 0 = left, 1 = right
 		this.player.direction = 1;
 
-		/* Set controls */
+		/* 
+		 *	Set controls 
+		 */
 		this.controls = YINS.game.input.keyboard.createCursorKeys();
 		this.controls.d = YINS.game.input.keyboard.addKey(Phaser.Keyboard.D);
 		this.controls.a = YINS.game.input.keyboard.addKey(Phaser.Keyboard.A);
@@ -88,7 +103,9 @@ YINS.Game.prototype = {
 		this.controls.s = YINS.game.input.keyboard.addKey(Phaser.Keyboard.S);
 		this.controls.shoot = YINS.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-		/* Camera settings */
+		/* 
+		 *	Camera settings 
+		 */
 		YINS.game.camera.follow(this.player);
 		
 	},
@@ -97,11 +114,15 @@ YINS.Game.prototype = {
 		
 		YINS.game.camera.y -= 500;
 
-		/* Set collisions between player and tilemap */
+		/* 
+		 *	Set collisions between player and tilemap 
+		 */
 		YINS.game.physics.arcade.collide(this.player, this.ground);
 		
-		/* Player's velocity has to be set to 0 again,
-		otherwise the player would run forever when it once pressed a button */
+		/* 
+		 *	Player's velocity has to be set to 0 again,
+		 *	otherwise the player would run forever when it once pressed a button 
+		 */
 		this.player.body.velocity.x = 0;
 
 		/*
@@ -138,23 +159,31 @@ YINS.Game.prototype = {
 			this.player.body.velocity.y = -600;
 		}
 		
-		// Play the up animation while the player is still going up
+		/*
+		 *	 Play the up animation while the player is still going up
+		 */
 		else if (!this.player.body.onFloor() && this.player.body.y < this.previousCoords.y) {
 			this.player.play('up');
 		}
 		
-		// Play the down animation while the player is falling down
+		/*
+		 *	Play the down animation while the player is falling down
+		 */
 		else if (!this.player.body.onFloor() && this.player.body.y > this.previousCoords.y) {
 			this.player.play('down');
 		}
 
-		// When the player ducks
+		/*
+		 *	When the player ducks
+		 */
 		if (this.controls.down.isDown || this.controls.s.isDown) {
 			this.player.play('duck');
 			this.player.body.velocity.y = 600;
 		}
 
-		/* Update player's previous coordinates */
+		/* 
+		 *	Update player's previous coordinates 
+		 */
 		this.previousCoords.x = this.player.body.x;
 		this.previousCoords.y = this.player.body.y;
 
