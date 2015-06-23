@@ -7,14 +7,16 @@ YINS.Game = function(game) {
 	this.music =  null;
 	this.map = {};
 	this.ground = {};
-	this.health = {};
 	this.controls = {};
 	this.previousCoords = {};
 	this.monsters = {};
-	this.wave = 0;
+	this.wave = 1;
+	this.waveIsSpawned = false;
 };
 
 player = {};
+health = {};
+lastCollision = new Date();
 
 YINS.Game.prototype = {
 
@@ -32,7 +34,7 @@ YINS.Game.prototype = {
 		/*
 		 *	Introductionary text
 		 */
-		displayText('Round 0 begins in 5 seconds', 4000);
+		//displayText('Wave 1 begins in 5 seconds', 4000);
 
 		/*
 		 *	Set up tilemap 
@@ -52,6 +54,8 @@ YINS.Game.prototype = {
 		 *	Create monster group
 		 */
 		this.monsters = YINS.game.add.group();
+		this.monsters.enableBody = true;
+		this.monsters.physicsBodyType = Phaser.Physics.ARCADE;
 
 		/* 
 		 *	Add sprites to the game world 
@@ -59,10 +63,10 @@ YINS.Game.prototype = {
 		player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
 
 		// Health indication
-		this.health = YINS.game.add.image(64, 64, 'spritesheet', 373);
-		this.health.scale.setTo(YINS.sprite_scale);
-		this.health.smoothed = false;
-		this.health.fixedToCamera = true;
+		health = YINS.game.add.image(64, 64, 'spritesheet', 373);
+		health.scale.setTo(YINS.sprite_scale);
+		health.smoothed = false;
+		health.fixedToCamera = true;
 
 		/* 
 		 *	Declare animations 
@@ -94,6 +98,7 @@ YINS.Game.prototype = {
 		player.smoothed = false;
 		player.anchor.setTo(0.5, 0.5);
 		player.body.collideWorldBounds = true;
+		player.health = 2;
 		// Set initial previous coordinates to spawn
 		this.previousCoords.x = player.body.x;
 		this.previousCoords.y = player.body.y;
@@ -117,10 +122,28 @@ YINS.Game.prototype = {
 		 *	Camera settings 
 		 */
 		YINS.game.camera.follow(player);
-		
+
 	},
 
 	update: function() {
+
+		/*
+		 *	Check and update waves
+		 */
+		// If player killed all monsters in the group
+		if (this.monsters.length == 0 && !this.waveIsSpawned) {
+			this.wave++;
+			displayText('Wave ' + this.wave + ' starts in 30 seconds', 5000);
+
+			var monsters = this.monsters;
+			var wave = this.wave;
+
+			setTimeout(function() {
+				spawnWave(monsters, wave);
+			}, 1000);
+			
+			this.waveIsSpawned = true;
+		}
 		
 		/* 
 		 *	Set collisions between player and tilemap 
@@ -131,6 +154,17 @@ YINS.Game.prototype = {
 		 *	Set collisions between monsters and tilemap
 		 */
 		YINS.game.physics.arcade.collide(this.monsters, this.ground);
+
+		/*
+		 *	Set collisions between player and monsters
+		 */
+		YINS.game.physics.arcade.collide(player, this.monsters, this.collisionHandler);
+
+		/*
+		 *	Monsters won't just walk right through each other
+		 *	Although they still can... a bit buggy
+		 */
+		YINS.game.physics.arcade.collide(this.monsters, this.monsters);
 		
 		/* 
 		 *	Player's velocity has to be set to 0 again,
@@ -206,6 +240,24 @@ YINS.Game.prototype = {
 		YINS.game.debug.text('Sprite X: ' + player.body.x + ' Y: ' + player.body.y, 32, 32);
 	},
 
+	collisionHandler: function() {
+		var current = new Date();
+
+		if ((current.getTime() - lastCollision.getTime()) > 1000) {
+			if (player.health == 2) {
+				player.health -= 1;
+				health.loadTexture('spritesheet', 374);
+			}
+			else if (player.health == 1) {
+				player.health -= 0;
+				player.alive = false;
+				health.loadTexture('spritesheet', 375);
+			}
+
+			player.body.velocity.y = -900;
+		}
+	},
+
 };
 
 /*
@@ -218,7 +270,6 @@ var Enemy = function() {
 	this.health = 1;
 	this.scale.setTo(YINS.sprite_scale);
 	this.smoothed = false;
-	YINS.game.physics.arcade.enable(this);
 
 	this.direction = 0;
 
@@ -267,4 +318,30 @@ function displayText(text, timeout) {
 	setTimeout(function() {
 		intro.destroy();
 	}, timeout);
+}
+
+/*
+ *	Spawns wave of new enemies
+ *	Size is dependant on the wave iteration,
+ *	then a random integer is added
+ */
+function spawnWave(monsterGroup, wave) {
+
+	// Formula for the size is:
+	//   size(x) = x^2 + 2x + Math.random
+	// with x = wave
+	var size = wave * wave + 2 * wave + Math.floor(Math.random() * 5);
+
+	var spawn = setInterval(function() {
+		monsterGroup.add(new Enemy());
+	}, 400);
+
+	var timeout = size * 400;
+
+	setTimeout(function() {
+		clearInterval(spawn);
+	}, timeout);
+
+	waveIsSpawned = false;
+
 }
