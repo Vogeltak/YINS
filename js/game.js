@@ -243,7 +243,7 @@ YINS.Game.prototype = {
 	collisionHandler: function() {
 		var current = new Date();
 
-		if ((current.getTime() - lastCollision.getTime()) > 1000) {
+		if ((current.getTime() - lastCollision.getTime()) > 1500) {
 			if (player.health == 2) {
 				player.health -= 1;
 				health.loadTexture('spritesheet', 374);
@@ -256,6 +256,8 @@ YINS.Game.prototype = {
 
 			player.body.velocity.y = -900;
 		}
+
+		lastCollision = current;
 	},
 
 };
