@@ -17,6 +17,7 @@ YINS.Preloader.prototype = {
 		YINS.game.load.audio('gameMusic', ['audio/game.wav']);
 		YINS.game.load.spritesheet('spritesheet', 'assets/spritesheet.png', 21, 21, 900, 2, 2);
 		YINS.game.load.tilemap('map', 'assets/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
+		YINS.game.load.bitmapFont('kenpixel', 'assets/kenpixel.ttf')
 	},
 
 	create: function() {
