@@ -7,12 +7,13 @@ YINS.Game = function(game) {
 	this.music =  null;
 	this.map = {};
 	this.ground = {};
-	this.player = {};
 	this.health = {};
 	this.controls = {};
 	this.previousCoords = {};
-	this.enemies = {};
+	this.monsters = {};
 };
+
+player = {};
 
 YINS.Game.prototype = {
 
@@ -41,12 +42,14 @@ YINS.Game.prototype = {
 		/*
 		 *	Create monster group
 		 */
+		this.monsters = YINS.game.add.group();
+
+		this.monsters.add(new Enemy());
 
 		/* 
 		 *	Add sprites to the game world 
 		 */
-		this.player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
-		// monster spawn 5015, 4090
+		player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
 
 		// Health indication
 		this.health = YINS.game.add.image(64, 64, 'spritesheet', 373);
@@ -57,11 +60,11 @@ YINS.Game.prototype = {
 		/* 
 		 *	Declare animations 
 		 */
-		this.player.animations.add('idle', [19]);
-		this.player.animations.add('walk', [19, 20, 21], 8);
-		this.player.animations.add('down', [28]);
-		this.player.animations.add('up', [29], 10);
-		this.player.animations.add('duck', [22]);
+		player.animations.add('idle', [19]);
+		player.animations.add('walk', [19, 20, 21], 8);
+		player.animations.add('down', [28]);
+		player.animations.add('up', [29], 10);
+		player.animations.add('duck', [22]);
 
 		/* Enable ARCADE physics engine 
 		You can read more about this in the documentation: http://phaser.io/docs/2.3.0/Phaser.Physics.Arcade.html
@@ -70,7 +73,7 @@ YINS.Game.prototype = {
 		YINS.game.physics.startSystem(Phaser.Physics.ARCADE);
 
 		// Enable ARCADE physics on sprites
-		YINS.game.physics.enable(this.player, Phaser.Physics.ARCADE);
+		YINS.game.physics.enable(player, Phaser.Physics.ARCADE);
 
 		/* Set gravity of the whole game world 
 		This can be manually changed on a per sprite basis by setting
@@ -80,18 +83,18 @@ YINS.Game.prototype = {
 		/* 
 		 *	Change properties of the player sprite 
 		 */
-		this.player.scale.setTo(YINS.sprite_scale);
-		this.player.smoothed = false;
-		this.player.anchor.setTo(0.5, 0.5);
-		this.player.body.collideWorldBounds = true;
+		player.scale.setTo(YINS.sprite_scale);
+		player.smoothed = false;
+		player.anchor.setTo(0.5, 0.5);
+		player.body.collideWorldBounds = true;
 		// Set initial previous coordinates to spawn
-		this.previousCoords.x = this.player.body.x;
-		this.previousCoords.y = this.player.body.y;
+		this.previousCoords.x = player.body.x;
+		this.previousCoords.y = player.body.y;
 
 		// Player's direction is kept track of because
 		// it is needed for playing the right animations
 		// 0 = left, 1 = right
-		this.player.direction = 1;
+		player.direction = 1;
 
 		/* 
 		 *	Set controls 
@@ -106,7 +109,7 @@ YINS.Game.prototype = {
 		/* 
 		 *	Camera settings 
 		 */
-		YINS.game.camera.follow(this.player);
+		YINS.game.camera.follow(player);
 		
 	},
 
@@ -115,13 +118,18 @@ YINS.Game.prototype = {
 		/* 
 		 *	Set collisions between player and tilemap 
 		 */
-		YINS.game.physics.arcade.collide(this.player, this.ground);
+		YINS.game.physics.arcade.collide(player, this.ground);
+
+		/*
+		 *	Set collisions between monsters and tilemap
+		 */
+		YINS.game.physics.arcade.collide(this.monsters, this.ground);
 		
 		/* 
 		 *	Player's velocity has to be set to 0 again,
 		 *	otherwise the player would run forever when it once pressed a button 
 		 */
-		this.player.body.velocity.x = 0;
+		player.body.velocity.x = 0;
 
 		/*
 		 *	Check for and handle player movement
@@ -129,66 +137,107 @@ YINS.Game.prototype = {
 		if (this.controls.right.isDown || this.controls.d.isDown) {
 			// If the player is turned left
 			// change direction to right
-			if (this.player.direction === 0) {
-				this.player.scale.x *= -1;
-				this.player.direction = 1;
+			if (player.direction === 0) {
+				player.scale.x *= -1;
+				player.direction = 1;
 			}
 
-			this.player.body.velocity.x = 450;
-			this.player.play('walk');
+			player.body.velocity.x = 450;
+			player.play('walk');
 		}
 		else if (this.controls.left.isDown || this.controls.a.isDown) {
 			// If the player is turned right
 			// change direction to left
-			if (this.player.direction == 1) {
-				this.player.scale.x *= -1;
-				this.player.direction = 0;
+			if (player.direction == 1) {
+				player.scale.x *= -1;
+				player.direction = 0;
 			}
 
-			this.player.body.velocity.x = -450;
-			this.player.play('walk');
+			player.body.velocity.x = -450;
+			player.play('walk');
 		}
 		else {
 			// When there are absolutely no inputs from the user
-			this.player.play('idle');
+			player.play('idle');
 		}
 
-		if ((this.controls.up.isDown || this.controls.w.isDown) && this.player.body.onFloor()) {
-			this.player.body.velocity.y = -600;
+		if ((this.controls.up.isDown || this.controls.w.isDown) && player.body.onFloor()) {
+			player.body.velocity.y = -600;
 		}
 		
 		/*
 		 *	 Play the up animation while the player is still going up
 		 */
-		else if (!this.player.body.onFloor() && this.player.body.y < this.previousCoords.y) {
-			this.player.play('up');
+		else if (!player.body.onFloor() && player.body.y < this.previousCoords.y) {
+			player.play('up');
 		}
 		
 		/*
 		 *	Play the down animation while the player is falling down
 		 */
-		else if (!this.player.body.onFloor() && this.player.body.y > this.previousCoords.y) {
-			this.player.play('down');
+		else if (!player.body.onFloor() && player.body.y > this.previousCoords.y) {
+			player.play('down');
 		}
 
 		/*
 		 *	When the player ducks
 		 */
 		if (this.controls.down.isDown || this.controls.s.isDown) {
-			this.player.play('duck');
-			this.player.body.velocity.y = 600;
+			player.play('duck');
+			player.body.velocity.y = 600;
 		}
 
 		/* 
 		 *	Update player's previous coordinates 
 		 */
-		this.previousCoords.x = this.player.body.x;
-		this.previousCoords.y = this.player.body.y;
+		this.previousCoords.x = player.body.x;
+		this.previousCoords.y = player.body.y;
 
 	},
 
 	render: function() {
-		YINS.game.debug.text('Sprite X: ' + this.player.body.x + ' Y: ' + this.player.body.y, 32, 32);
-	}
+		YINS.game.debug.text('Sprite X: ' + player.body.x + ' Y: ' + player.body.y, 32, 32);
+	},
 
 };
+
+/*
+ *	Enemy class
+ */
+var Enemy = function() {
+	Phaser.Sprite.call(this, YINS.game, 5015, 4090, 'spritesheet', 470);
+
+	this.anchor.setTo(0.5, 0.5);
+	this.health = 1;
+	this.scale.setTo(YINS.sprite_scale);
+	this.smoothed = false;
+	YINS.game.physics.arcade.enable(this);
+
+	this.direction = 0;
+
+	this.animations.add('walk', [470, 471, 472], 8);
+}
+
+Enemy.prototype = Object.create(Phaser.Sprite.prototype);
+Enemy.prototype.constructor = Enemy;
+
+Enemy.prototype.update = function() {
+	if (player.body.x < this.body.x) {
+		if (this.direction == 1) {
+			this.scale.x *= -1;
+			this.direction = 0;
+		}
+
+		this.body.velocity.x = -250;
+		this.play('walk');
+	}
+	else if (player.body.x > this.body.x) {
+		if (this.direction == 0) {
+			this.scale.x *= -1;
+			this.direction = 1;
+		}
+
+		this.body.velocity.x = 250;
+		this.play('walk');
+	}
+}
