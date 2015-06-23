@@ -11,6 +11,7 @@ YINS.Game = function(game) {
 	this.controls = {};
 	this.previousCoords = {};
 	this.monsters = {};
+	this.wave = 0;
 };
 
 player = {};
@@ -24,7 +25,15 @@ YINS.Game.prototype = {
 		this.music.loopFull(0.5);
 
 		YINS.game.stage.backgroundColor = YINS.color.grey_dark;
-		
+
+		//var text = YINS.game.add.bitmapText(320, 320, 'kenpixel', 'Welcome in YINS', 64);
+		//text.fixedToCamera = true;
+
+		/*
+		 *	Introductionary text
+		 */
+		displayText('Round 0 begins in 5 seconds', 4000);
+
 		/*
 		 *	Set up tilemap 
 		 */
@@ -43,8 +52,6 @@ YINS.Game.prototype = {
 		 *	Create monster group
 		 */
 		this.monsters = YINS.game.add.group();
-
-		this.monsters.add(new Enemy());
 
 		/* 
 		 *	Add sprites to the game world 
@@ -240,4 +247,24 @@ Enemy.prototype.update = function() {
 		this.body.velocity.x = 250;
 		this.play('walk');
 	}
+}
+
+/*
+ *	====================
+ *	Static functions
+ *	====================
+ */
+
+/*
+ *	Display a display centered text to inform the user of something
+ */
+function displayText(text, timeout) {
+	var intro = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY - 200, "Round 0 starts in 5 seconds", YINS.text.game);
+	intro.anchor.set(0.5);
+	intro.smoothed = false;
+	intro.fixedToCamera = true;
+
+	setTimeout(function() {
+		intro.destroy();
+	}, timeout);
 }

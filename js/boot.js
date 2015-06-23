@@ -39,6 +39,12 @@ YINS = {
 			font: '8vh Arial',
 			fill: '#f0f0f0',
 			align: 'center'
+		},
+
+		game: {
+			font: ' 6vh Courier New',
+			fill: '#f0f0f0',
+			align: 'center',
 		}
 	}
 
