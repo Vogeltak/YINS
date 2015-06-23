@@ -112,8 +112,6 @@ YINS.Game.prototype = {
 
 	update: function() {
 		
-		YINS.game.camera.y -= 500;
-
 		/* 
 		 *	Set collisions between player and tilemap 
 		 */
