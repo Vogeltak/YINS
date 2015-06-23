@@ -11,7 +11,6 @@ YINS.Game = function(game) {
 	this.health = {};
 	this.controls = {};
 	this.previousCoords = {};
-	this.slime = {};
 };
 
 YINS.Game.prototype = {
@@ -36,9 +35,9 @@ YINS.Game.prototype = {
 		this.ground.resizeWorld();
 		YINS.game.add.existing(this.ground);
 
+		// monster spawn 5015, 4090
 		/* Add sprites to the game world */
 		this.player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
-		this.slime = YINS.game.add.sprite(5015, 4090, 'spritesheet', 230);
 
 		// Health indication
 		this.health = YINS.game.add.image(64, 64, 'spritesheet', 373);
@@ -52,8 +51,6 @@ YINS.Game.prototype = {
 		this.player.animations.add('down', [28]);
 		this.player.animations.add('up', [29], 10);
 		this.player.animations.add('duck', [22]);
-		
-		this.slime.animations.add('idle', [231, 230, 229], 6);
 
 		/* Enable ARCADE physics engine 
 		You can read more about this in the documentation: http://phaser.io/docs/2.3.0/Phaser.Physics.Arcade.html
@@ -63,7 +60,6 @@ YINS.Game.prototype = {
 
 		// Enable ARCADE physics on sprites
 		YINS.game.physics.enable(this.player, Phaser.Physics.ARCADE);
-		YINS.game.physics.enable(this.slime, Phaser.Physics.ARCADE);
 
 		/* Set gravity of the whole game world 
 		This can be manually changed on a per sprite basis by setting
@@ -78,22 +74,11 @@ YINS.Game.prototype = {
 		// Set initial previous coordinates to spawn
 		this.previousCoords.x = this.player.body.x;
 		this.previousCoords.y = this.player.body.y;
-		
-		/* Change properties of the slime sprite */
-		this.slime.scale.setTo(YINS.sprite_scale);
-		this.slime.smoothed = false;
-		this.slime.anchor.setTo(0.5, 0.5);
-		this.slime.body.collideWorldBounds = true;
 
 		// Player's direction is kept track of because
 		// it is needed for playing the right animations
 		// 0 = left, 1 = right
 		this.player.direction = 1;
-
-		// Slime's direction is kept track of because
-		// it is needed for playing the right animations
-		// 0 = left, 1 = right 
-		this.slime.direction = 0;
 
 		/* Set controls */
 		this.controls = YINS.game.input.keyboard.createCursorKeys();
@@ -115,11 +100,6 @@ YINS.Game.prototype = {
 		/* Set collisions between player and tilemap */
 		YINS.game.physics.arcade.collide(this.player, this.ground);
 		
-		/* Set collisions between slime and tilemap */
-		YINS.game.physics.arcade.collide(this.slime, this.ground);
-		
-		this.slime.play('idle');
-
 		/* Player's velocity has to be set to 0 again,
 		otherwise the player would run forever when it once pressed a button */
 		this.player.body.velocity.x = 0;
@@ -177,23 +157,6 @@ YINS.Game.prototype = {
 		/* Update player's previous coordinates */
 		this.previousCoords.x = this.player.body.x;
 		this.previousCoords.y = this.player.body.y;
-
-		if (this.player.body.x < this.slime.body.x) {
-			if (this.slime.direction == 1) {
-				this.slime.scale.x *= -1;
-				this.slime.direction = 0;
-			}
-
-			this.slime.body.velocity.x = -150;
-		}
-		else if (this.player.body.x > this.slime.body.x) {
-			if (this.slime.direction == 0) {
-				this.slime.scale.x *= -1;
-				this.slime.direction = 1;
-			}
-
-			this.slime.body.velocity.x = 150;
-		}
 
 	},
 
