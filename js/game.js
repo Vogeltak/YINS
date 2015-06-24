@@ -61,6 +61,7 @@ YINS.Game.prototype = {
 		 *	Add sprites to the game world 
 		 */
 		player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
+		player.gun = YINS.game.add.sprite(236, 4515, 'spritesheet', 709);
 
 		// Health indication
 		health = YINS.game.add.image(64, 64, 'spritesheet', 373);
@@ -109,6 +110,13 @@ YINS.Game.prototype = {
 		player.direction = 1;
 
 		/* 
+		 *	Change properties of the gun the player wields
+		 */
+		player.gun.scale.setTo(YINS.sprite_scale);
+		player.gun.smoothed = false;
+		player.gun.anchor.setTo(0.5, 0.5);
+
+		/* 
 		 *	Set controls 
 		 */
 		this.controls = YINS.game.input.keyboard.createCursorKeys();
@@ -126,6 +134,13 @@ YINS.Game.prototype = {
 	},
 
 	update: function() {
+
+		/*
+		 *	Update gun's y position
+		 *	gun's x position is updated in the player update functions
+		 *	because it is dependant on the player's direction
+		 */
+		player.gun.y = player.body.y + 32;
 
 		/*
 		 *	Check and update waves
@@ -181,10 +196,12 @@ YINS.Game.prototype = {
 			if (player.direction === 0) {
 				player.scale.x *= -1;
 				player.direction = 1;
+				player.gun.scale.x *= -1;
 			}
 
 			player.body.velocity.x = 450;
 			player.play('walk');
+			player.gun.x = player.body.x + 50;
 		}
 		else if (this.controls.left.isDown || this.controls.a.isDown) {
 			// If the player is turned right
@@ -192,14 +209,20 @@ YINS.Game.prototype = {
 			if (player.direction == 1) {
 				player.scale.x *= -1;
 				player.direction = 0;
+				player.gun.scale.x *= -1;
 			}
 
 			player.body.velocity.x = -450;
 			player.play('walk');
+			player.gun.x = player.body.x;
 		}
 		else {
 			// When there are absolutely no inputs from the user
 			player.play('idle');
+			if (player.direction === 0)
+				player.gun.x = player.body.x;
+			else
+				player.gun.x = player.body.x + 50;
 		}
 
 		if ((this.controls.up.isDown || this.controls.w.isDown) && player.body.onFloor()) {
@@ -270,7 +293,7 @@ var Enemy = function() {
 	Phaser.Sprite.call(this, YINS.game, 5015, 4090, 'spritesheet', 470);
 
 	this.anchor.setTo(0.5, 0.5);
-	this.health = 1;
+	this.health = 4;
 	this.scale.setTo(YINS.sprite_scale);
 	this.smoothed = false;
 
