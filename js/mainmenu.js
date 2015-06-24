@@ -4,7 +4,7 @@
  */
 
 YINS.MainMenu = function(game) {
-	this.music;
+	this.music = {};
 };
 
 YINS.MainMenu.prototype = {
