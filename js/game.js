@@ -12,6 +12,8 @@ YINS.Game = function(game) {
 	this.monsters = {};
 	this.wave = 1;
 	this.waveIsSpawned = false;
+	this.bullettimer = 0;
+	this.gunshot;
 };
 
 player = {};
@@ -26,7 +28,14 @@ YINS.Game.prototype = {
 		this.music = YINS.game.add.audio('gameMusic');
 		this.music.loopFull(0.5);
 
+		this.gunshot = YINS.game.add.audio('gunshot');
+
 		YINS.game.stage.backgroundColor = YINS.color.grey_dark;
+
+		/*
+		 *	Set bullettimer to the current time
+		 */
+		this.bullettimer = YINS.game.time.now;
 
 		//var text = YINS.game.add.bitmapText(320, 320, 'kenpixel', 'Welcome in YINS', 64);
 		//text.fixedToCamera = true;
@@ -50,6 +59,12 @@ YINS.Game.prototype = {
 		this.ground.resizeWorld();
 		YINS.game.add.existing(this.ground);
 
+		/* 
+		 *	Add sprites to the game world 
+		 */
+		player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
+		player.gun = YINS.game.add.sprite(236, 4515, 'spritesheet', 709);
+
 		/*
 		 *	Create monster group
 		 */
@@ -57,11 +72,19 @@ YINS.Game.prototype = {
 		this.monsters.enableBody = true;
 		this.monsters.physicsBodyType = Phaser.Physics.ARCADE;
 
-		/* 
-		 *	Add sprites to the game world 
+		/*
+		 *	Create bullet group
 		 */
-		player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
-		player.gun = YINS.game.add.sprite(236, 4515, 'spritesheet', 709);
+		player.gun.bullets = YINS.game.add.group();
+		player.gun.bullets.enableBody = true;
+		player.gun.bullets.physicsBodyType = Phaser.Physics.ARCADE;
+		player.gun.bullets.setAll('anchor.x', 0.5);
+		player.gun.bullets.setAll('anchor.y', 0.5);
+		player.gun.bullets.setAll('checkWorldBounds', true);
+		player.gun.bullets.setAll('outOfBoundsKill', true);
+		player.gun.bullets.setAll('scale.x', YINS.sprite_scale);
+		player.gun.bullets.setAll('scale.y', YINS.sprite_scale);
+		player.gun.bullets.setAll('gravity.y', 0);
 
 		// Health indication
 		health = YINS.game.add.image(64, 64, 'spritesheet', 373);
@@ -100,6 +123,7 @@ YINS.Game.prototype = {
 		player.anchor.setTo(0.5, 0.5);
 		player.body.collideWorldBounds = true;
 		player.health = 2;
+		player.body.drag.x = 500;
 		// Set initial previous coordinates to spawn
 		this.previousCoords.x = player.body.x;
 		this.previousCoords.y = player.body.y;
@@ -179,8 +203,14 @@ YINS.Game.prototype = {
 		 *	Monsters won't just walk right through each other
 		 *	Although they still can... a bit buggy
 		 */
-		YINS.game.physics.arcade.collide(this.monsters, this.monsters);
+		YINS.game.physics.arcade.collide(this.monsters);
 		
+		/*
+		 *	Set bullet collisions
+		 *	for destroying bullets and hurting enemies
+		 */
+		YINS.game.physics.arcade.overlap(player.gun.bullets, this.monsters, this.hitMonster, null, this);
+
 		/* 
 		 *	Player's velocity has to be set to 0 again,
 		 *	otherwise the player would run forever when it once pressed a button 
@@ -257,6 +287,50 @@ YINS.Game.prototype = {
 		this.previousCoords.x = player.body.x;
 		this.previousCoords.y = player.body.y;
 
+		/*
+		 *	Fire bullets
+		 */
+		if (this.controls.shoot.isDown) {
+			if (YINS.game.time.now > this.bullettimer) {
+				this.gunshot.play('', 0, 0.5);
+
+				var BULLET_SPEED = 1000;
+				var FIRING_DELAY = 150;
+
+				// Player is looking to the left, 
+				// so fire to the left
+				if (player.direction === 0) {
+					var bullet = YINS.game.add.sprite(player.gun.x - 50, player.gun.y - 25, 'spritesheet', 711);
+					player.gun.bullets.add(bullet);
+					bullet.scale.setTo(YINS.sprite_scale);
+					bullet.body.gravity.y = -1300;
+					bullet.body.velocity.x = -1 * BULLET_SPEED;
+
+					// Move player backwards a little, 
+					// representing knockback of the gun
+					player.body.x += 10;
+				}
+
+				// Player is looking to the right,
+				// so fire to the right
+				else {
+					var bullet = YINS.game.add.sprite(player.gun.x + 10, player.gun.y - 25, 'spritesheet', 711);
+					player.gun.bullets.add(bullet);
+					bullet.scale.setTo(YINS.sprite_scale);
+					bullet.body.gravity.y = -1300;
+					bullet.body.velocity.x = BULLET_SPEED;
+
+					// Move player backwards a little, 
+					// representing knockback of the gun
+					player.body.x -= 10;
+				}
+
+				this.bullettimer = YINS.game.time.now + FIRING_DELAY;
+			}
+
+			this.shakeGame();
+		}
+
 	},
 
 	render: function() {
@@ -284,6 +358,47 @@ YINS.Game.prototype = {
 		lastCollision = current;
 	},
 
+	hitMonster: function(bullet, monster) {
+		bullet.kill();
+
+		// Monster dies
+		if (monster.health == 1) {
+			monster.health -= 1;
+			monster.alive = false;
+
+			// Implement explosion on position of murdered monster
+
+			monster.kill();
+		}
+
+		// Monster stays alive but loses health from the bullet impact
+		else {
+			monster.health -= 1;
+		}
+	},
+
+	/*
+	 *	Destroy bullet when it hits ground
+	 *	because these are no magic bullets
+	 */
+	hitGround: function(bullet, ground) {
+		bullet.kill();
+	},
+
+	shakeGame: function() {
+		var rumbleSpeed = 50;
+		var rumbleInterval;
+		var rumbleStopTimeout;
+
+		// In milliseconds
+		var rumbleDuration = 150;
+
+		clearInterval(rumbleInterval);
+		rumbleInterval = setInterval(this.shake, rumbleSpeed, YINS.game.camera, 10, 10);
+		clearInterval(rumbleStopTimeut);
+        rumbleStopTimeout = setTimeout(this.stopShake, rumbleDuration, this.game.camera, rumbleInterval);
+	}
+
 };
 
 /*
@@ -293,7 +408,7 @@ var Enemy = function() {
 	Phaser.Sprite.call(this, YINS.game, 5015, 4090, 'spritesheet', 470);
 
 	this.anchor.setTo(0.5, 0.5);
-	this.health = 4;
+	this.health = 3;
 	this.scale.setTo(YINS.sprite_scale);
 	this.smoothed = false;
 
