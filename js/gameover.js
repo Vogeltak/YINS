@@ -18,7 +18,7 @@ YINS.Gameover.prototype = {
 		var title = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY, 'You Died', YINS.text.header);
 		title.anchor.set(0.5);
 		
-		var score = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY + 100, 'You scored ' + YINS.score + ' points', YINS.text.subheader);;
+		var score = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY + 100, 'You scored ' + YINS.score + ' points', YINS.text.subheader);
 		score.anchor.set(0.5);
 	},
 	
