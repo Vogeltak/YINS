@@ -252,6 +252,7 @@ YINS.Game.prototype = {
 				player.health -= 0;
 				player.alive = false;
 				health.loadTexture('spritesheet', 375);
+				YINS.game.state.start('gameover');
 			}
 
 			player.body.velocity.y = -900;
