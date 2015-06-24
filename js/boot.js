@@ -48,10 +48,16 @@ YINS = {
 		},
 
 		game: {
-			font: ' 6vh Courier New',
+			font: '6vh Courier New',
 			fill: '#f0f0f0',
 			align: 'center',
-		}
+		},
+
+		hud: {
+			fon: '2vh Courier New',
+			fill: '#f0f0f0',
+			align: 'center',
+		},
 	}
 
 };
