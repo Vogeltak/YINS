@@ -10,15 +10,17 @@ YINS.Game = function(game) {
 	this.controls = {};
 	this.previousCoords = {};
 	this.monsters = {};
-	this.wave = 1;
-	this.waveIsSpawned = false;
+	this.wave = 0;
 	this.bullettimer = 0;
 	this.gunshot;
 };
 
 player = {};
 health = {};
+waveIsSpawned = false;
 lastCollision = new Date();
+text = {};
+enemyCounter = {};
 
 YINS.Game.prototype = {
 
@@ -37,13 +39,13 @@ YINS.Game.prototype = {
 		 */
 		this.bullettimer = YINS.game.time.now;
 
-		//var text = YINS.game.add.bitmapText(320, 320, 'kenpixel', 'Welcome in YINS', 64);
-		//text.fixedToCamera = true;
-
 		/*
-		 *	Introductionary text
+		 *	This text line is used for informing the player
+		 *	about new waves
 		 */
-		//displayText('Wave 1 begins in 5 seconds', 4000);
+		text = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY - 200, ' ', YINS.text.game);
+		text.anchor.setTo(0.5, 0.5);
+		text.fixedToCamera = true;
 
 		/*
 		 *	Set up tilemap 
@@ -71,6 +73,8 @@ YINS.Game.prototype = {
 		this.monsters = YINS.game.add.group();
 		this.monsters.enableBody = true;
 		this.monsters.physicsBodyType = Phaser.Physics.ARCADE;
+		this.monsters.setAll('checkWorldBounds', true);
+		this.monsters.setAll('outOfBoundsKill', true);
 
 		/*
 		 *	Create bullet group
@@ -150,6 +154,13 @@ YINS.Game.prototype = {
 		this.controls.s = YINS.game.input.keyboard.addKey(Phaser.Keyboard.S);
 		this.controls.shoot = YINS.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+		/*
+		 *	Initialize enemycounter
+		 */
+		enemyCounter = YINS.game.add.text(64, 130, 'Enemies: n / n', YINS.text.hud);
+		enemyCounter.anchor.setTo(0, 0);
+		enemyCounter.fixedToCamera = true;
+
 		/* 
 		 *	Camera settings 
 		 */
@@ -170,18 +181,18 @@ YINS.Game.prototype = {
 		 *	Check and update waves
 		 */
 		// If player killed all monsters in the group
-		if (this.monsters.length === 0 && !this.waveIsSpawned) {
+		if (this.monsters.length === 0 && !waveIsSpawned) {
 			this.wave++;
-			YINS.game.add.text('Wave ' + this.wave + ' starts in 30 seconds', 5000);
+			displayText('Wave ' + this.wave + ' starts in 5 seconds', 3000);
 
 			var monsters = this.monsters;
 			var wave = this.wave;
 
 			setTimeout(function() {
 				spawnWave(monsters, wave);
-			}, 1000);
+			}, 5000);
 			
-			this.waveIsSpawned = true;
+			waveIsSpawned = true;
 		}
 		
 		/* 
@@ -339,10 +350,6 @@ YINS.Game.prototype = {
 
 	},
 
-	render: function() {
-		YINS.game.debug.text('Sprite X: ' + player.body.x + ' Y: ' + player.body.y, 32, 32);
-	},
-
 	collisionHandler: function() {
 		var current = new Date();
 
@@ -350,6 +357,7 @@ YINS.Game.prototype = {
 			if (player.health == 2) {
 				player.health -= 1;
 				health.loadTexture('spritesheet', 374);
+				lastCollision = current;
 			}
 			else if (player.health == 1) {
 				player.health -= 0;
@@ -360,8 +368,6 @@ YINS.Game.prototype = {
 
 			player.body.velocity.y = -900;
 		}
-
-		lastCollision = current;
 	},
 
 	hitMonster: function(bullet, monster) {
@@ -374,13 +380,15 @@ YINS.Game.prototype = {
 
 			// TODO: Implement explosion on position of murdered monster
 
-			monster.kill();
+			this.monsters.remove(monster, true);
+
+			// Add one to the player's score
+			YINS.score += this.wave;
 		}
 
 		// Monster stays alive but loses health from the bullet impact
 		else {
 			monster.health -= 1;
-			console.log('monster hit at ' + monster.x + ' ' + monster.y);
 		}
 	},
 
@@ -399,7 +407,9 @@ YINS.Game.prototype = {
 /*
  *	Enemy class
  */
-var Enemy = function() {
+var Enemy = function(monsterGroup) {
+	this.monsterGroup = monsterGroup;
+
 	Phaser.Sprite.call(this, YINS.game, 5015, 4090, 'spritesheet', 470);
 
 	this.anchor.setTo(0.5, 0.5);
@@ -434,6 +444,13 @@ Enemy.prototype.update = function() {
 		this.body.velocity.x = 250;
 		this.play('walk');
 	}
+
+	// Removes it from the monsters group
+	// when this has fallen out of the world
+	// parameter 2 indicates that the object should be destroyed
+	if (this.body.y > 5200) {
+		this.monsterGroup.remove(this, true);
+	}
 };
 
 /*
@@ -445,14 +462,11 @@ Enemy.prototype.update = function() {
 /*
  *	Display a display centered text to inform the user of something
  */
-function displayText(text, timeout) {
-	var intro = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY - 200, "Round 0 starts in 5 seconds", YINS.text.game);
-	intro.anchor.set(0.5);
-	intro.smoothed = false;
-	intro.fixedToCamera = true;
+function displayText(message, timeout) {
+	text.setText(message);
 
 	setTimeout(function() {
-		intro.destroy();
+		text.setText(' ');
 	}, timeout);
 }
 
@@ -469,15 +483,14 @@ function spawnWave(monsterGroup, wave) {
 	var size = wave * wave + 2 * wave + Math.floor(Math.random() * 5);
 
 	var spawn = setInterval(function() {
-		monsterGroup.add(new Enemy());
+		monsterGroup.add(new Enemy(monsterGroup));
 	}, 200);
 
 	var timeout = size * 200;
 
 	setTimeout(function() {
 		clearInterval(spawn);
+		waveIsSpawned = false;
 	}, timeout);
-
-	waveIsSpawned = false;
 
 }
