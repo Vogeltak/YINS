@@ -223,7 +223,7 @@ YINS.Game.prototype = {
 		if (this.controls.right.isDown || this.controls.d.isDown) {
 			// If the player is turned left
 			// change direction to right
-			if (player.direction === 0) {
+			if (player.direction === 0 && !this.controls.shoot.isDown) {
 				player.scale.x *= -1;
 				player.direction = 1;
 				player.gun.scale.x *= -1;
@@ -231,12 +231,16 @@ YINS.Game.prototype = {
 
 			player.body.velocity.x = 450;
 			player.play('walk');
-			player.gun.x = player.body.x + 50;
+
+			if (this.controls.shoot.isDown && player.direction === 0)
+				player.gun.x = player.body.x;
+			else 
+				player.gun.x = player.body.x + 50;
 		}
 		else if (this.controls.left.isDown || this.controls.a.isDown) {
 			// If the player is turned right
 			// change direction to left
-			if (player.direction == 1) {
+			if (player.direction == 1 && !this.controls.shoot.isDown) {
 				player.scale.x *= -1;
 				player.direction = 0;
 				player.gun.scale.x *= -1;
@@ -244,7 +248,11 @@ YINS.Game.prototype = {
 
 			player.body.velocity.x = -450;
 			player.play('walk');
-			player.gun.x = player.body.x;
+
+			if (this.controls.shoot.isDown && player.direction == 1)
+				player.gun.x = player.body.x + 50;
+			else
+				player.gun.x = player.body.x;
 		}
 		else {
 			// When there are absolutely no inputs from the user
@@ -308,7 +316,7 @@ YINS.Game.prototype = {
 
 					// Move player backwards a little, 
 					// representing knockback of the gun
-					player.body.x += 10;
+					player.body.x += 24;
 				}
 
 				// Player is looking to the right,
@@ -322,13 +330,11 @@ YINS.Game.prototype = {
 
 					// Move player backwards a little, 
 					// representing knockback of the gun
-					player.body.x -= 10;
+					player.body.x -= 24;
 				}
 
 				this.bullettimer = YINS.game.time.now + FIRING_DELAY;
 			}
-
-			this.shakeGame();
 		}
 
 	},
@@ -366,7 +372,7 @@ YINS.Game.prototype = {
 			monster.health -= 1;
 			monster.alive = false;
 
-			// Implement explosion on position of murdered monster
+			// TODO: Implement explosion on position of murdered monster
 
 			monster.kill();
 		}
@@ -374,6 +380,7 @@ YINS.Game.prototype = {
 		// Monster stays alive but loses health from the bullet impact
 		else {
 			monster.health -= 1;
+			console.log('monster hit at ' + monster.x + ' ' + monster.y);
 		}
 	},
 
@@ -382,22 +389,10 @@ YINS.Game.prototype = {
 	 *	because these are no magic bullets
 	 */
 	hitGround: function(bullet, ground) {
+		// FIXME: when standing on the grass layer,
+		// bullets will almost immediately disappear
 		bullet.kill();
 	},
-
-	shakeGame: function() {
-		var rumbleSpeed = 50;
-		var rumbleInterval;
-		var rumbleStopTimeout;
-
-		// In milliseconds
-		var rumbleDuration = 150;
-
-		clearInterval(rumbleInterval);
-		rumbleInterval = setInterval(this.shake, rumbleSpeed, YINS.game.camera, 10, 10);
-		clearInterval(rumbleStopTimeut);
-        rumbleStopTimeout = setTimeout(this.stopShake, rumbleDuration, this.game.camera, rumbleInterval);
-	}
 
 };
 
