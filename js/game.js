@@ -21,6 +21,9 @@ waveIsSpawned = false;
 lastCollision = new Date();
 text = {};
 enemyCounter = {};
+scoreCounter = {};
+waveCounter = {};
+totalEnemiesCurrentWave = 0;
 
 YINS.Game.prototype = {
 
@@ -127,7 +130,7 @@ YINS.Game.prototype = {
 		player.anchor.setTo(0.5, 0.5);
 		player.body.collideWorldBounds = true;
 		player.health = 2;
-		player.body.drag.x = 500;
+		player.alive = true;
 		// Set initial previous coordinates to spawn
 		this.previousCoords.x = player.body.x;
 		this.previousCoords.y = player.body.y;
@@ -155,11 +158,25 @@ YINS.Game.prototype = {
 		this.controls.shoot = YINS.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 		/*
-		 *	Initialize enemycounter
+		 *	Initialize waveCounter
 		 */
-		enemyCounter = YINS.game.add.text(64, 130, 'Enemies: n / n', YINS.text.hud);
+		waveCounter = YINS.game.add.text(64, 130, 'Wave: 1', YINS.text.hud);
+		waveCounter.anchor.setTo(0, 0);
+		waveCounter.fixedToCamera = true;
+
+		/*
+		 *	Initialize enemyCounter
+		 */
+		enemyCounter = YINS.game.add.text(64, 180, 'Enemies: n / n', YINS.text.hud);
 		enemyCounter.anchor.setTo(0, 0);
 		enemyCounter.fixedToCamera = true;
+
+		/*
+		 *	Initialize scoreCounter
+		 */
+		scoreCounter = YINS.game.add.text(64, 230, 'Score: 0', YINS.text.hud);
+		scoreCounter.anchor.setTo(0, 0);
+		scoreCounter.fixedToCamera = true;
 
 		/* 
 		 *	Camera settings 
@@ -171,11 +188,13 @@ YINS.Game.prototype = {
 	update: function() {
 
 		/*
-		 *	Update gun's y position
-		 *	gun's x position is updated in the player update functions
-		 *	because it is dependant on the player's direction
+		 *	Check if player is still alive,
+		 *	if he/she is not, hand over to gameOver function
 		 */
-		player.gun.y = player.body.y + 32;
+		 console.log(player.alive);
+		if (!player.alive) {
+			YINS.game.state.start('gameover');
+		}
 
 		/*
 		 *	Check and update waves
@@ -193,6 +212,8 @@ YINS.Game.prototype = {
 			}, 5000);
 			
 			waveIsSpawned = true;
+
+			waveCounter.setText('Wave: ' + this.wave);
 		}
 		
 		/* 
@@ -227,6 +248,13 @@ YINS.Game.prototype = {
 		 *	otherwise the player would run forever when it once pressed a button 
 		 */
 		player.body.velocity.x = 0;
+
+		/*
+		 *	Update gun's y position
+		 *	gun's x position is updated in the player update functions
+		 *	because it is dependant on the player's direction
+		 */
+		player.gun.y = player.body.y + 32;
 
 		/*
 		 *	Check for and handle player movement
@@ -348,6 +376,12 @@ YINS.Game.prototype = {
 			}
 		}
 
+		/*
+		 *	Update HUD
+		 */
+		enemyCounter.setText('Enemies: ' + this.monsters.length + ' / ' + totalEnemiesCurrentWave);
+		scoreCounter.setText('Score: ' + YINS.score);
+
 	},
 
 	collisionHandler: function() {
@@ -363,7 +397,6 @@ YINS.Game.prototype = {
 				player.health -= 0;
 				player.alive = false;
 				health.loadTexture('spritesheet', 375);
-				YINS.game.state.start('gameover');
 			}
 
 			player.body.velocity.y = -900;
@@ -400,6 +433,36 @@ YINS.Game.prototype = {
 		// FIXME: when standing on the grass layer,
 		// bullets will almost immediately disappear
 		bullet.kill();
+	},
+
+	/*
+	 *	Handles passtrough to gameover state
+	 *	and resets objects from current state
+	 */
+	gameOver: function() {
+
+		YINS.game.state.start('gameover');
+
+		// reset variables
+		this.music =  null;
+		this.map = {};
+		this.ground = {};
+		this.controls = {};
+		this.previousCoords = {};
+		this.monsters = {};
+		this.wave = 0;
+		this.bullettimer = 0;
+
+		player = {};
+		health = {};
+		waveIsSpawned = false;
+		lastCollision = new Date();
+		text = {};
+		enemyCounter = {};
+		scoreCounter = {};
+		waveCounter = {};
+		totalEnemiesCurrentWave = 0;
+
 	},
 
 };
@@ -481,6 +544,8 @@ function spawnWave(monsterGroup, wave) {
 	//   size(x) = x^2 + 2x + Math.random
 	// with x = wave
 	var size = wave * wave + 2 * wave + Math.floor(Math.random() * 5);
+
+	totalEnemiesCurrentWave = size;
 
 	var spawn = setInterval(function() {
 		monsterGroup.add(new Enemy(monsterGroup));

@@ -20,6 +20,15 @@ YINS.Gameover.prototype = {
 		
 		var score = YINS.game.add.text(YINS.game.world.centerX, YINS.game.world.centerY + 100, 'You scored ' + YINS.score + ' points', YINS.text.subheader);
 		score.anchor.set(0.5);
+
+		var tryagain = YINS.game.add.text(YINS.game.world.centerX, YINS.GAME_HEIGHT - 50, 'Click to try again', {'font': '3vh Courier New', 'fill': '#b0b0b0', 'align': 'center'});
+		tryagain.anchor.set(0.5);
+
+		YINS.game.input.onDown.add(this.startGame, this);
 	},
+
+	startGame: function(pointer) {
+ 		window.location.reload(false);
+	}
 	
 };
