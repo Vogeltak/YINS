@@ -172,7 +172,7 @@ YINS.Game.prototype = {
 		// If player killed all monsters in the group
 		if (this.monsters.length === 0 && !this.waveIsSpawned) {
 			this.wave++;
-			displayText('Wave ' + this.wave + ' starts in 30 seconds', 5000);
+			YINS.game.add.text('Wave ' + this.wave + ' starts in 30 seconds', 5000);
 
 			var monsters = this.monsters;
 			var wave = this.wave;
@@ -316,7 +316,7 @@ YINS.Game.prototype = {
 
 					// Move player backwards a little, 
 					// representing knockback of the gun
-					player.body.x += 24;
+					player.body.x += 12;
 				}
 
 				// Player is looking to the right,
@@ -330,7 +330,7 @@ YINS.Game.prototype = {
 
 					// Move player backwards a little, 
 					// representing knockback of the gun
-					player.body.x -= 24;
+					player.body.x -= 12;
 				}
 
 				this.bullettimer = YINS.game.time.now + FIRING_DELAY;
@@ -470,9 +470,9 @@ function spawnWave(monsterGroup, wave) {
 
 	var spawn = setInterval(function() {
 		monsterGroup.add(new Enemy());
-	}, 400);
+	}, 200);
 
-	var timeout = size * 400;
+	var timeout = size * 200;
 
 	setTimeout(function() {
 		clearInterval(spawn);
