@@ -131,7 +131,7 @@ YINS.Game.prototype = {
 		 *	Check and update waves
 		 */
 		// If player killed all monsters in the group
-		if (this.monsters.length == 0 && !this.waveIsSpawned) {
+		if (this.monsters.length === 0 && !this.waveIsSpawned) {
 			this.wave++;
 			displayText('Wave ' + this.wave + ' starts in 30 seconds', 5000);
 
@@ -276,7 +276,7 @@ var Enemy = function() {
 	this.direction = 0;
 
 	this.animations.add('walk', [470, 471, 472], 8);
-}
+};
 
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 Enemy.prototype.constructor = Enemy;
@@ -292,7 +292,7 @@ Enemy.prototype.update = function() {
 		this.play('walk');
 	}
 	else if (player.body.x > this.body.x) {
-		if (this.direction == 0) {
+		if (this.direction === 0) {
 			this.scale.x *= -1;
 			this.direction = 1;
 		}
@@ -300,7 +300,7 @@ Enemy.prototype.update = function() {
 		this.body.velocity.x = 250;
 		this.play('walk');
 	}
-}
+};
 
 /*
  *	====================
