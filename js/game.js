@@ -191,8 +191,8 @@ YINS.Game.prototype = {
 		 *	Check if player is still alive,
 		 *	if he/she is not, hand over to gameOver function
 		 */
-		 console.log(player.alive);
 		if (!player.alive) {
+			YINS.untilWave = this.wave;
 			YINS.game.state.start('gameover');
 		}
 
