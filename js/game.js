@@ -75,7 +75,7 @@ YINS.Game.prototype = {
 		 *	Initialize monster particle emitter
 		 */
 		monsterEmitter = YINS.game.add.emitter(0, 0);
-		monsterEmitter.bounce.setTo(0.5, 0.5);
+		monsterEmitter.bounce.setTo(0.65);
 		monsterEmitter.setXSpeed(-75, 75);
 		monsterEmitter.setYSpeed(-50, -750);
 		monsterEmitter.makeParticles('spritesheet', 78, 1000, true);
