@@ -128,7 +128,7 @@ YINS.Game.prototype = {
 		player.scale.setTo(YINS.sprite_scale);
 		player.smoothed = false;
 		player.anchor.setTo(0.5, 0.5);
-		player.body.collideWorldBounds = true;
+		player.body.collideWorldBounds = false;
 		player.health = 2;
 		player.alive = true;
 		// Set initial previous coordinates to spawn
@@ -333,7 +333,18 @@ YINS.Game.prototype = {
 		 */
 		this.previousCoords.x = player.body.x;
 		this.previousCoords.y = player.body.y;
-
+		
+		/*
+		 *	If the player has fallen through the world
+		 * 	set him back to spawn and decrease his health
+		 */
+		if (player.body.y > 5200) {
+			player.body.x = 236;
+			player.body.y = 4515;
+			player.body.velocity.y = 0;
+			player.body.velocity.x = 0;
+		}
+		
 		/*
 		 *	Fire bullets
 		 */
