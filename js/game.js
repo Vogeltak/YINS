@@ -4,7 +4,7 @@
  */
 
 YINS.Game = function(game) {
-	this.music =  null;
+	this.music =  {};
 	this.map = {};
 	this.ground = {};
 	this.controls = {};
@@ -12,7 +12,7 @@ YINS.Game = function(game) {
 	this.monsters = {};
 	this.wave = 0;
 	this.bullettimer = 0;
-	this.gunshot;
+	this.gunshot = {};
 };
 
 player = {};
@@ -343,11 +343,13 @@ YINS.Game.prototype = {
 
 				var BULLET_SPEED = 1000;
 				var FIRING_DELAY = 150;
+				
+				var bullet;
 
 				// Player is looking to the left, 
 				// so fire to the left
 				if (player.direction === 0) {
-					var bullet = YINS.game.add.sprite(player.gun.x - 50, player.gun.y - 25, 'spritesheet', 711);
+					bullet = YINS.game.add.sprite(player.gun.x - 50, player.gun.y - 25, 'spritesheet', 711);
 					player.gun.bullets.add(bullet);
 					bullet.scale.setTo(YINS.sprite_scale);
 					bullet.body.gravity.y = -1300;
@@ -361,7 +363,7 @@ YINS.Game.prototype = {
 				// Player is looking to the right,
 				// so fire to the right
 				else {
-					var bullet = YINS.game.add.sprite(player.gun.x + 10, player.gun.y - 25, 'spritesheet', 711);
+					bullet = YINS.game.add.sprite(player.gun.x + 10, player.gun.y - 25, 'spritesheet', 711);
 					player.gun.bullets.add(bullet);
 					bullet.scale.setTo(YINS.sprite_scale);
 					bullet.body.gravity.y = -1300;
