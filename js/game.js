@@ -24,6 +24,7 @@ enemyCounter = {};
 scoreCounter = {};
 waveCounter = {};
 totalEnemiesCurrentWave = 0;
+monsterEmitter = {};
 
 YINS.Game.prototype = {
 
@@ -70,6 +71,15 @@ YINS.Game.prototype = {
 		player = YINS.game.add.sprite(236, 4515, 'spritesheet', 19);
 		player.gun = YINS.game.add.sprite(236, 4515, 'spritesheet', 709);
 
+		/*
+		 *	Initialize monster particle emitter
+		 */
+		monsterEmitter = YINS.game.add.emitter(0, 0);
+		monsterEmitter.bounce.setTo(0.5, 0.5);
+		monsterEmitter.setXSpeed(-75, 75);
+		monsterEmitter.setYSpeed(-50, -750);
+		monsterEmitter.makeParticles('spritesheet', 78, 1000, true);
+		
 		/*
 		 *	Create monster group
 		 */
@@ -243,6 +253,23 @@ YINS.Game.prototype = {
 		 */
 		YINS.game.physics.arcade.overlap(player.gun.bullets, this.monsters, this.hitMonster, null, this);
 
+		/*
+		 *	Set monster particle collision
+		 */
+		YINS.game.physics.arcade.collide(monsterEmitter, this.ground);
+		
+		/*
+		 *	Set overlap for player and monster particles
+		 *	so when the player picks up the particles his score will increase
+		 */
+		YINS.game.physics.arcade.overlap(player, monsterEmitter, function(player, coin) {
+			YINS.score += 2;
+			
+			// Add sound effect to visualize picking up the coin
+			
+			coin.kill();
+		});
+		
 		/* 
 		 *	Player's velocity has to be set to 0 again,
 		 *	otherwise the player would run forever when it once pressed a button 
@@ -424,7 +451,11 @@ YINS.Game.prototype = {
 			monster.health -= 1;
 			monster.alive = false;
 
-			// TODO: Implement explosion on position of murdered monster
+			var amountOfCoins = 2 + Math.floor(Math.random() * 5);
+			
+			monsterEmitter.x = monster.x;
+			monsterEmitter.y = monster.y;
+			monsterEmitter.start(true, 32000, 1, amountOfCoins);
 
 			this.monsters.remove(monster, true);
 
