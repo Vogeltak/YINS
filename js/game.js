@@ -265,7 +265,7 @@ YINS.Game.prototype = {
 		YINS.game.physics.arcade.overlap(player, monsterEmitter, function(player, coin) {
 			YINS.score += 2;
 			
-			// Add sound effect to visualize picking up the coin
+			// TODO: Add sound effect to visualize picking up the coin
 			
 			coin.kill();
 		});
@@ -456,6 +456,8 @@ YINS.Game.prototype = {
 			monsterEmitter.x = monster.x;
 			monsterEmitter.y = monster.y;
 			monsterEmitter.start(true, 32000, 1, amountOfCoins);
+			
+			// TODO: add explosion sound to visualize the monster kill
 
 			this.monsters.remove(monster, true);
 
