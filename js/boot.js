@@ -14,10 +14,10 @@ YINS = {
 	Usage example: YINS.color.purple  */
 	color: {
 	    grey_dark: '#404040',
-		purple: '#673ab7',
-		purple_light: '#b39ddb',
-		green_light: '#c5e1a5',
-		white: '#f0f0f0'
+	    purple: '#673ab7',
+	    purple_light: '#b39ddb',
+	    green_light: '#c5e1a5',
+	    white: '#f0f0f0'
 	},
 
 	/* Text styles are available by calling: YINS.text.STYLE 
@@ -75,7 +75,7 @@ YINS.Boot.prototype = {
 	create: function() {
 		//  Phaser will automatically pause if the browser tab the game is in loses focus.
 		//  true disables that; false keeps it
-        YINS.game.stage.disableVisibilityChange = false;
+        	YINS.game.stage.disableVisibilityChange = false;
 
 		YINS.game.state.start('preloader');
 	}
