@@ -395,7 +395,7 @@ YINS.Game.prototype = {
 
 					// Move player backwards a little, 
 					// representing knockback of the gun
-					player.body.x += 12;
+					player.body.velocity.x = 350;
 				}
 
 				// Player is looking to the right,
@@ -409,7 +409,7 @@ YINS.Game.prototype = {
 
 					// Move player backwards a little, 
 					// representing knockback of the gun
-					player.body.x -= 12;
+					player.body.velocity.x = -350;
 				}
 
 				this.bullettimer = YINS.game.time.now + FIRING_DELAY;
