@@ -75,7 +75,7 @@ YINS.Boot.prototype = {
 	create: function() {
 		//  Phaser will automatically pause if the browser tab the game is in loses focus.
 		//  true disables that; false keeps it
-        YINS.game.stage.disableVisibilityChange = false;
+        	YINS.game.stage.disableVisibilityChange = false;
 
 		YINS.game.state.start('preloader');
 	}
